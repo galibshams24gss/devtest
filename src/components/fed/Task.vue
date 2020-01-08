@@ -1,53 +1,39 @@
 <template>
   <div class="container">
+
+    <br/><br/>
+
     <div class="userInputs">
-        <h5><u>Rectangle</u></h5>
-        x: <input class="rectEntry" v-model.number="x" :max="maxX" :min="0" type="number">
-        y: <input class="rectEntry" v-model.number="y" :max="maxY" :min="0" type="number">
-        width: <input class="rectEntry" v-model.number="width" :max="maxWidth" :min="10" type="number">
-        height: <input class="rectEntry" v-model.number="height" :max="maxHeight" :min="10" type="number">
-        <br/><br/>
-
-        <h5><u>Circle</u></h5>
-        cx: <input class="circleEntry" v-model.number="cx" :max="maxCX" :min="20" type="number">
-        cy: <input class="circleEntry" v-model.number="cy" :max="maxCY" :min="25" type="number">
-        radius: <input class="circleEntry" v-model.number="r" :max="maxRadius" :min="2" type="number">
-        <br/><br/>
-
-        <h5><u>Polygon</u></h5>
-        points:
-        <input class="polygon" v-model="points" placeholder=" Enter Points" v-on:input="submit">
+        <span>Draw SVG</span>
+        <br/>
+        <textarea id="textarea" v-model="commands" rows="4" placeholder=" Multiple Commands" @keyup.enter="onEnter" @input="draw"></textarea>
+        <br/>
+        <svg :width="svgWidth" :height="svgHeight">
+          <rect v-if="commands.indexOf(rectCommand) !== -1"
+            :x="rectOptions.x" :y="rectOptions.y" :width="rectOptions.width" :height="rectOptions.height">
+          </rect>
+          <circle v-if="commands.indexOf(circleCommand) !== -1"
+              :cx="circleOptions.cx" :cy="circleOptions.cy" :r="circleOptions.r">
+          </circle>
+          <polygon v-if="commands.indexOf(polygonCommand) !== -1" :points="polygonOptions.points"/>
+        </svg>
     </div>
 
     <br/><br/>
 
-    <svg :width="svgWidth" :height="svgHeight">
-        <rect 
-            :x="x" :y="y" :width="width" :height="height">
-        </rect>
-
-        <circle 
-            :cx="cx" :cy="cy" :r="r">
-        </circle>
-
-        <polygon :points="points"/>
-    </svg>
     </div>
 </template>
 
 <script>
   export default {
     data: () => ({
-      x: 100,
-      y: 50,
-      width: 25,
-      height: 25,
+      msg: '',
+      commands: '',
+      rectCommand: 'R',
+      circleCommand: 'C',
+      polygonCommand: 'P',
       svgWidth: 250,
       svgHeight: 250,
-      cx: 20,
-      cy: 100,
-      r: 20,
-      points: "200,10 250,190 160,210",
       errors:[]
     }),
 
@@ -60,6 +46,29 @@
   },
 
   computed: {
+      rectOptions() {
+            return {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0
+            }
+      },
+
+      circleOptions() {
+            return {
+                cx: 0,
+                cy: 0,
+                r: 0
+            }
+      },
+
+      polygonOptions() {
+            return {
+                points: null
+            }
+      },
+
       maxX() {
           return this.svgWidth - this.width
       },
@@ -100,12 +109,44 @@
         } else {
           console.log("Correct");
         }
+    },
+
+    draw:function(e) {
+        if(this.commands.indexOf(this.rectCommand) !== -1){
+          const splitString = this.commands.split('  ');
+          this.rectOptions.x = parseInt(splitString[1],10);
+          this.rectOptions.y = parseInt(splitString[2],10);
+          this.rectOptions.width = parseInt(splitString[3],10);
+          this.rectOptions.height = parseInt(splitString[4],10);
+
+            if(splitString.indexOf(this.circleCommand) === -1){
+            this.circleOptions.cx = parseInt(splitString[5],10);
+            this.circleOptions.cy = parseInt(splitString[6],10);
+            this.circleOptions.r = parseInt(splitString[7],10);
+            } 
+            
+            if(splitString.indexOf(this.polygonCommand) === -1){
+            this.polygonOptions.points = splitString[8];
+            }
+        }
+        else {
+          console.log("NA");
+        }
+    },
+
+    onEnter: function() {
+       this.msg = 'enter pressed';
     }
+
     }
   }
 </script>
 
 <style scoped>
+    textarea {
+      background: #ffffff;
+    }
+
     rect {
         fill: #660066;
     }

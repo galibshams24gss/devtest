@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # test-project
 
 > A Vue.js project
@@ -32,3 +33,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 =======
 # practice
 >>>>>>> 7573e053a799a177de04f5a7808373738a7e2bac
+=======
+# devtest
+assessment
+>>>>>>> 6b92a1e36f8f0dd245035734d1adf7bd4827bcde
